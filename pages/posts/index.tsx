@@ -1,11 +1,12 @@
-'use client'
-
 import { styled } from '@mui/material/styles';
 import builder from "@builder.io/react"
-import { Box, Container, Typography, useTheme } from "@mui/material"
+import { Box, Card, CardContent, CardMedia, Container, Typography, useTheme } from "@mui/material"
 import Paper from '@mui/material/Paper';
 import Grid from "@mui/material/Unstable_Grid2"
 import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
+import Image from 'next/image';
+import { getDate } from '@/utils/helper';
+import DateRangeIcon from '@mui/icons-material/DateRange';
 
 export interface Post {
     title: string
@@ -26,7 +27,7 @@ const getPosts = async () => {
     return posts
 }
 
-const Item = styled(Paper)(({ theme }) => ({
+const Item = styled(Card)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
     padding: theme.spacing(1),
@@ -53,12 +54,52 @@ const Pages = () => {
                 </Typography>
                 <Grid container spacing={2}>
                     {
-                        data && data?.length > 0 ? data?.map((post, index) => {
+                        data && data?.length > 0 ? data?.map((post) => {
                             const data = post.data as Post
                             return (
-                                <Grid xs={4}>
+                                <Grid md={4} xs={12} key={data.title}>
                                     <Item variant='outlined'>
-                                        <Typography variant='h4'>{data.title}</Typography>
+                                        <CardMedia>
+                                            <Image 
+                                                src={data.image}
+                                                alt={data.title}
+                                                width={200}
+                                                height={200}
+                                            />
+                                        </CardMedia>
+                                        <CardContent>
+                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <DateRangeIcon style={{ fontSize: '14px', marginRight: '4px' }} />
+                                                <Typography variant='caption'>
+                                                    {getDate(data.date)}
+                                                </Typography>
+                                            </Box>
+                                            <Typography 
+                                                variant='h4' 
+                                                fontWeight='bold' 
+                                                sx={{
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis",
+                                                    display: "-webkit-box",
+                                                    WebkitLineClamp: "2",
+                                                    WebkitBoxOrient: "vertical",
+                                                }}
+                                            >
+                                                {data.title}
+                                            </Typography>
+                                            <Typography 
+                                                variant='body1'
+                                                sx={{
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis",
+                                                    display: "-webkit-box",
+                                                    WebkitLineClamp: "2",
+                                                    WebkitBoxOrient: "vertical",
+                                                }}
+                                            >
+                                                {data.description}
+                                            </Typography>
+                                        </CardContent>
                                     </Item>
                                 </Grid>
                             )

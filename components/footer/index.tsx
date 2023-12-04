@@ -6,9 +6,10 @@ const Footer: React.FC = () => {
     return(
         <Box 
             sx={{ 
-                position: 'absolute', 
-                bottom: 0,
-                padding: '16px'
+                // position: 'absolute', 
+                // bottom: 0,
+                padding: '32px',
+                marginTop: '16px'
             }}
         >
             <Container>
