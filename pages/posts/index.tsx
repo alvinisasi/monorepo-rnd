@@ -1,47 +1,42 @@
-import { styled } from '@mui/material/styles';
-import builder from "@builder.io/react"
-import { Box, Card, CardContent, CardMedia, Container, Typography, useTheme } from "@mui/material"
-import Paper from '@mui/material/Paper';
+
+import { Box, Container, Typography, useTheme } from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
 import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
-import Image from 'next/image';
-import { getDate } from '@/utils/helper';
-import DateRangeIcon from '@mui/icons-material/DateRange';
-
-export interface Post {
-    title: string
-    description: string
-    image: string
-    author: string
-    content: string
-    category: string
-    date: Date
-}
+import { Post } from '@/utils/types';
+import PostCard from '@/components/postCard';
+import { useEffect, useState } from "react";
+import PostSkeleton from "@/components/postSkeleton";
+import Input from "@/components/input";
+import { getPosts } from "@/services/posts";
 
 export const revalidate = 60
 
-builder.init(process.env.NEXT_PUBLIC_BUILDERIO_API_KEY || '')
-
-const getPosts = async () => {
-    const posts = await builder.getAll('blog-post', { prerender: false})
-    return posts
-}
-
-const Item = styled(Card)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'left',
-    color: theme.palette.text.secondary,
-}));
-
 const Pages = () => {
-    const { data } = useQuery({
+    const { isLoading, isError, data, error } = useQuery({
         queryKey: ['posts'],
         queryFn: () => getPosts()
     })
+    const [posts, setPosts] = useState<Post[]>([])
+    const [search, setSearch] = useState('')
+
+    useEffect(() => {
+        if(!isLoading){
+            let postData = data?.map(post => post.data)
+            setPosts(postData as Post[])
+        }
+    }, [isLoading])
+    let arr = [0, 1, 2]
 
     const theme = useTheme()
+
+    const handleSearch = (value: string) => {
+        setSearch(value)
+        const result = data?.filter(item => item.data?.title.toLowerCase().includes(value.toLowerCase()))
+        
+        let postData = result?.map(post => post.data)
+        setPosts(postData as Post[])
+    }
+
     return(
         <Box sx={{ flexGrow: 1 }}>
             <Container>
@@ -52,62 +47,22 @@ const Pages = () => {
                 >
                     Posts
                 </Typography>
-                <Grid container spacing={2}>
+                <Input 
+                    value={search}
+                    onChange={(e) => handleSearch(e.target.value)}
+                />
+                <Grid container spacing={4}>
                     {
-                        data && data?.length > 0 ? data?.map((post) => {
-                            const data = post.data as Post
-                            return (
-                                <Grid md={4} xs={12} key={data.title}>
-                                    <Item variant='outlined'>
-                                        <CardMedia>
-                                            <Image 
-                                                src={data.image}
-                                                alt={data.title}
-                                                width={200}
-                                                height={200}
-                                            />
-                                        </CardMedia>
-                                        <CardContent>
-                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                                <DateRangeIcon style={{ fontSize: '14px', marginRight: '4px' }} />
-                                                <Typography variant='caption'>
-                                                    {getDate(data.date)}
-                                                </Typography>
-                                            </Box>
-                                            <Typography 
-                                                variant='h4' 
-                                                fontWeight='bold' 
-                                                sx={{
-                                                    overflow: "hidden",
-                                                    textOverflow: "ellipsis",
-                                                    display: "-webkit-box",
-                                                    WebkitLineClamp: "2",
-                                                    WebkitBoxOrient: "vertical",
-                                                }}
-                                            >
-                                                {data.title}
-                                            </Typography>
-                                            <Typography 
-                                                variant='body1'
-                                                sx={{
-                                                    overflow: "hidden",
-                                                    textOverflow: "ellipsis",
-                                                    display: "-webkit-box",
-                                                    WebkitLineClamp: "2",
-                                                    WebkitBoxOrient: "vertical",
-                                                }}
-                                            >
-                                                {data.description}
-                                            </Typography>
-                                        </CardContent>
-                                    </Item>
-                                </Grid>
-                            )
-                        }) : 
-                        <Typography variant="body1" color={theme.palette.primary.contrastText}>
-                            No Posts
-                        </Typography>
-                    }
+                        isLoading ? 
+                            arr.map(() => <PostSkeleton /> )
+                            :
+                            posts && posts?.length > 0 ? posts?.map((post) => {
+                                return <PostCard md={4} data={post} />
+                            }) : 
+                            <Typography variant="body1" color={theme.palette.primary.contrastText}>
+                                No Posts
+                            </Typography>
+                    } 
                 </Grid>
             </Container>
         </Box>
