@@ -1,10 +1,11 @@
 import { styled } from '@mui/material/styles';
-import { Box, Card, CardContent, CardMedia, Container, Typography, useTheme } from "@mui/material"
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Container, Divider, Typography, useTheme } from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
 import Image from 'next/image';
 import { getDate } from '@/utils/helper';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import { PostCardProps } from '@/utils/types';
+import { useRouter } from 'next/navigation';
 
 const Item = styled(Card)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -16,9 +17,16 @@ const Item = styled(Card)(({ theme }) => ({
 
 const PostCard: React.FC<PostCardProps> = ({ data, md }) => {
     const theme = useTheme()
+    const router = useRouter()
+    const handleClickViewMore = () => {
+        router.push(
+            { 
+                pathname: `/posts/${data.slug}`
+            })
+    }
     return(
         <Grid md={md} xs={12} key={data.title}>
-            <Item variant='outlined' sx={{ height: 400 }}>
+            <Item variant='outlined' sx={{ height: 550 }}>
                 <CardMedia sx={{ position: 'relative', width: '100%', height: '50%' }}>
                     <Image 
                         src={data.image}
@@ -63,6 +71,20 @@ const PostCard: React.FC<PostCardProps> = ({ data, md }) => {
                         {data.description}
                     </Typography>
                 </CardContent>
+                <Divider />
+                <CardActions>
+                    <Button 
+                        sx={{
+                            marginBottom: 8
+                        }}
+                        variant='outlined'
+                        onClick={() => {
+                            router.push(`/posts/${data.slug}`)
+                            sessionStorage.setItem('post-details', JSON.stringify(data))
+                        }}>
+                            <Typography color={theme.palette.primary.contrastText}>View More</Typography>
+                    </Button>
+                </CardActions>
             </Item>
         </Grid>
     )

@@ -11,10 +11,10 @@ import { getPosts } from "@/services/posts";
 
 export const revalidate = 60
 
-const Pages = () => {
+const Posts = () => {
     const { isLoading, isError, data, error } = useQuery({
         queryKey: ['posts'],
-        queryFn: () => getPosts()
+        queryFn: () => getPosts({ limit: 30, offset: 0})
     })
     const [posts, setPosts] = useState<Post[]>([])
     const [search, setSearch] = useState('')
@@ -72,7 +72,7 @@ const Pages = () => {
 export async function getStaticProps() {
     const queryClient = new QueryClient()
   
-    await queryClient.prefetchQuery({ queryKey: ['posts'], queryFn: getPosts })
+    await queryClient.prefetchQuery({ queryKey: ['posts'], queryFn: () => getPosts({ limit: 30, offset: 0 }) })
   
     return {
         props: {
@@ -82,4 +82,4 @@ export async function getStaticProps() {
     }
   }
 
-export default Pages
+export default Posts

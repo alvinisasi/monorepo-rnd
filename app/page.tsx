@@ -9,15 +9,14 @@ import { useQuery } from "@tanstack/react-query";
 import PostSkeleton from "@/components/postSkeleton";
 import PostCard from "@/components/postCard";
 import { Post } from "@/utils/types";
-import { Container, Typography, useTheme } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2"
+import { Box, Container, Typography, useTheme } from "@mui/material";
 
 let sliderSettings = {
     dots: true,
     infinite: false,
     speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 4,
+    slidesToShow: 3,
+    slidesToScroll: 3,
     initialSlide: 0,
     responsive: [
       {
@@ -32,8 +31,8 @@ let sliderSettings = {
       {
         breakpoint: 600,
         settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
+          slidesToShow: 1,
+          slidesToScroll: 1,
           initialSlide: 2
         }
       },
@@ -44,40 +43,38 @@ let sliderSettings = {
           slidesToScroll: 1
         }
       }
-    ],
-    styles: {
-        display: 'grid',
-        spacing: 4
-    }
+    ]
 };
 let arr = [0, 1, 2, 3, 4]
 
 const Home = () => {
     const { isLoading, isError, data, error } = useQuery({
         queryKey: ['posts'],
-        queryFn: () => getPosts()
+        queryFn: () => getPosts({ limit: 3, offset: 0 })
     })
 	const theme = useTheme()
 
     return (
-        <>
-			<Hero />
-            <Container>
-                <Grid container spacing={4} mt={8} >
-                {
-                    isLoading ? 
-                        arr.map(() => <PostSkeleton /> )
-                        :
-                        data && data?.length > 0 ? data?.map((post) => {
-                            return <PostCard data={post.data as Post} md={3} />
-                        }) : 
-                        <Typography variant="body1" color={theme.palette.primary.contrastText}>
-                            No Posts
-                        </Typography>
-                } 
-                </Grid>
-            </Container>
-        </>
+      <>
+        <Hero />
+        <Container sx={{ marginTop: 8, marginBottom: 8 }}>
+            <Slider {...sliderSettings}>
+            {
+                isLoading ? 
+                    arr.map(() => <PostSkeleton /> )
+                    :
+                    data && data?.length > 0 ? data?.map((post) => {
+                        return <Box sx={{ padding: '1em' }}>
+                            <PostCard data={post.data as Post} md={3} />
+                        </Box>
+                    }) : 
+                    <Typography variant="body1" color={theme.palette.primary.contrastText}>
+                        No Posts
+                    </Typography>
+            } 
+            </Slider>
+        </Container>
+      </>
     );
 }
 
