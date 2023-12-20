@@ -8,8 +8,9 @@ import { getPosts } from "@/services/posts";
 import { useQuery } from "@tanstack/react-query";
 import PostSkeleton from "@/components/postSkeleton";
 import PostCard from "@/components/postCard";
-import { Post } from "@/utils/types";
+import { Post, PostResponse } from "@/utils/types";
 import { Box, Container, Typography, useTheme } from "@mui/material";
+import { useEffect } from "react";
 
 let sliderSettings = {
     dots: true,
@@ -50,9 +51,14 @@ let arr = [0, 1, 2, 3, 4]
 const Home = () => {
     const { isLoading, isError, data, error } = useQuery({
         queryKey: ['posts'],
-        queryFn: () => getPosts({ limit: 3, offset: 0 })
+        queryFn: () => getPosts()
     })
 	const theme = useTheme()
+
+  useEffect(() => {
+    console.log('posts ', data);
+    
+  }, [isLoading])
 
     return (
       <>
@@ -61,11 +67,11 @@ const Home = () => {
             <Slider {...sliderSettings}>
             {
                 isLoading ? 
-                    arr.map(() => <PostSkeleton /> )
+                    arr.map((item, index) => <PostSkeleton key={index} /> )
                     :
-                    data && data?.length > 0 ? data?.map((post) => {
+                    data && data?.length > 0 ? data?.map((post: PostResponse) => {
                         return <Box sx={{ padding: '1em' }}>
-                            <PostCard data={post.data as Post} md={3} />
+                            <PostCard data={post.attributes} md={3} />
                         </Box>
                     }) : 
                     <Typography variant="body1" color={theme.palette.primary.contrastText}>

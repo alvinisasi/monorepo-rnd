@@ -18,12 +18,14 @@ const Item = styled(Card)(({ theme }) => ({
 const PostCard: React.FC<PostCardProps> = ({ data, md }) => {
     const theme = useTheme()
     const router = useRouter()
+    console.log(data.image);
+    
     return(
         <Grid md={md} xs={12} key={data.title}>
             <Item variant='outlined' sx={{ height: 550 }}>
                 <CardMedia sx={{ position: 'relative', width: '100%', height: '50%' }}>
                     <Image 
-                        src={data.image}
+                        src={`${process.env.NEXT_PUBLIC_STRAPI_API}${data.image.data.attributes?.url}`}
                         alt={data.title}
                         fill
                         objectFit='cover'
