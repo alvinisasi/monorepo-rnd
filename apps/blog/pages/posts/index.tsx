@@ -22,8 +22,6 @@ const Posts = () => {
     useEffect(() => {
         if(!isLoading){
             let postData: Post[] = data?.map((post: PostResponse) => post.attributes)
-            console.log(postData);
-            
             setPosts(postData)
         }
     }, [isLoading])
@@ -82,6 +80,6 @@ export async function getStaticProps() {
         },
         revalidate: revalidate
     }
-  }
+}
 
 export default Posts

@@ -18,7 +18,6 @@ const Item = styled(Card)(({ theme }) => ({
 const PostCard: React.FC<PostCardProps> = ({ data, md }) => {
     const theme = useTheme()
     const router = useRouter()
-    console.log(data.image);
     
     return(
         <Grid md={md} xs={12} key={data.title}>

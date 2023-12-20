@@ -1,3 +1,5 @@
+import { ParsedUrlQuery } from "querystring"
+
 export interface Post {
     title: string
     description: string
@@ -86,3 +88,10 @@ export interface ImageSmall {
     url: string
 }
   
+export interface IParams extends ParsedUrlQuery {
+    id: string
+}
+
+export interface PostDetailProps {
+    data: PostResponse
+}

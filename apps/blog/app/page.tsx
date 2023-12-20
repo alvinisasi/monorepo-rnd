@@ -55,11 +55,6 @@ const Home = () => {
     })
 	const theme = useTheme()
 
-  useEffect(() => {
-    console.log('posts ', data);
-    
-  }, [isLoading])
-
     return (
       <>
         <Hero />

@@ -22,3 +22,12 @@ export const getPosts = async () => {
     return posts.data.data
 }
 
+export const getPostDetail = async (id: number) => {
+    const headers = {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    }
+    const posts = await axios.get(`${url}/api/posts/${id}?populate=*`, headers)
+    return posts.data.data
+}
