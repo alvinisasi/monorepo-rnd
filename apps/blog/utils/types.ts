@@ -90,6 +90,7 @@ export interface ImageSmall {
   
 export interface IParams extends ParsedUrlQuery {
     id: string
+    slug: string
 }
 
 export interface PostDetailProps {
