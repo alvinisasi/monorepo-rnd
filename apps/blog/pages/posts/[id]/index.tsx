@@ -6,11 +6,11 @@ import Image from "next/image";
 import parse from 'html-react-parser';
 import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
 import { getPostDetail, getPosts } from "@/services/posts";
-import { GetStaticProps, GetStaticPaths, NextPage  } from 'next';
+import { GetStaticProps, GetStaticPaths, NextPage, InferGetStaticPropsType  } from 'next';
 import { queries } from "@/queries";
 import { ColorRing } from  'react-loader-spinner'
 
-const PostDetail: React.FC<PostDetailProps> = (props) => {
+const PostDetail = ({ data }: InferGetStaticPropsType<typeof getStaticProps>) => {
     const theme = useTheme()
     // const dataSession = typeof window !== 'undefined' && sessionStorage.getItem('post-details')
     // const data: Post = JSON.parse(dataSession as string) as Post
@@ -18,53 +18,43 @@ const PostDetail: React.FC<PostDetailProps> = (props) => {
     //     queryKey: ['posts'],
     //     queryFn: () => getPostDetail(props.id)
     // })
-    const { attributes } = props.data
+    data = data ?? []
+    const { attributes } = data
+    console.log('ATTRIBUTE ', attributes);
 
-    if (attributes){
-        return(
-            <Container>
-                <Typography 
-                    variant="h3" 
-                    color={theme.palette.primary.contrastText}
-                    sx={{ margin: 8, textAlign: 'center', fontWeight: 'bold' }}
-                >
-                    {attributes.title}
-                </Typography>
-    
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <DateRangeIcon style={{ fontSize: '14px', marginRight: '4px' }} />
-                    <Typography variant='caption'>
-                        {getDate(attributes.date)}
-                    </Typography>
-                </Box>
-                <Typography variant='caption' fontStyle='italic'>
-                    author: {attributes.author}
-                </Typography>
-                <Box sx={{ position: 'relative', width: '100%', minHeight: 450, marginTop: 8, marginBottom: 8 }}>
-                    <Image 
-                        src={`${process.env.NEXT_PUBLIC_STRAPI_API}${attributes.image.data.attributes?.url}`}
-                        alt={attributes.title}
-                        fill
-                        objectFit='cover'
-                    />
-                </Box>
-                
-                <Typography variant='body2'>
-                    {parse(attributes.content)}
-                </Typography>
-            </Container>
-        )
-    } 
+    return(
+        <Container>
+            <Typography 
+                variant="h3" 
+                color={theme.palette.primary.contrastText}
+                sx={{ margin: 8, textAlign: 'center', fontWeight: 'bold' }}
+            >
+                {attributes.title}
+            </Typography>
 
-    return <ColorRing
-        visible={true}
-        height="80"
-        width="80"
-        ariaLabel="blocks-loading"
-        wrapperStyle={{}}
-        wrapperClass="blocks-wrapper"
-        colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
-    />
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <DateRangeIcon style={{ fontSize: '14px', marginRight: '4px' }} />
+                <Typography variant='caption'>
+                    {getDate(attributes.date)}
+                </Typography>
+            </Box>
+            <Typography variant='caption' fontStyle='italic'>
+                author: {attributes.author}
+            </Typography>
+            <Box sx={{ position: 'relative', width: '100%', minHeight: 450, marginTop: 8, marginBottom: 8 }}>
+                <Image 
+                    src={`${process.env.NEXT_PUBLIC_STRAPI_API}${attributes.image.data.attributes?.url}`}
+                    alt={attributes.title}
+                    fill
+                    objectFit='cover'
+                />
+            </Box>
+            
+            <Typography variant='body2'>
+                {parse(attributes.content)}
+            </Typography>
+        </Container>
+    )
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -73,7 +63,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
     return {
         paths: pathsWithParams,
-        fallback: true
+        fallback: false
     }
 }
 
@@ -91,7 +81,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     return {
         props: {
             // dehydratedState: dehydrate(queryClient),
-            data: data?.data as PostResponse
+            data: data as PostResponse
         },
         revalidate: 60
     }
