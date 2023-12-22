@@ -4,33 +4,12 @@ import { useTheme } from "@mui/material/styles";
 import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Typography, Link as MuiLink } from "@mui/material";
 import NextLink from "next/link";
 import { useState } from "react";
-import builder from "@builder.io/react"
-import { useQuery } from "@tanstack/react-query";
+import { HeaderProps } from "@/utils/types";
 
-export interface NavData {
-  data: LinkProps
-}
-
-interface LinkProps {
-    url: string;
-    label: string;
-}
-
-builder.init(process.env.NEXT_PUBLIC_BUILDERIO_API_KEY || '')
-
-const getLinks = async () => {
-	const links = await builder.getAll("nav-link");
-	return links as NavData[]
-}
-
-const Header: React.FC = () => {
+const Header = ({ menus }: { menus: HeaderProps[] }) => {
 	const theme = useTheme()
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 	const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-	const { data } = useQuery({
-        queryKey: ["links"],
-        queryFn: () => getLinks(),
-    })
 
 	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorElNav(event.currentTarget);
@@ -79,10 +58,10 @@ const Header: React.FC = () => {
 								display: { xs: 'block', md: 'none' },
 							}}
 						>
-							{ data && data?.length > 0 ? data?.map((link, index) => (
+							{ menus && menus?.length > 0 ? menus?.map((link, index) => (
 								<MenuItem key={index} onClick={handleCloseNavMenu}>
-									<MuiLink component={NextLink} href={link.data.url}>
-										<Typography textAlign='center' color={theme.palette.primary.contrastText}>{link.data.label}</Typography>
+									<MuiLink component={NextLink} href={link.url}>
+										<Typography textAlign='center' color={theme.palette.primary.contrastText}>{link.label}</Typography>
 									</MuiLink>
 								</MenuItem>
 							)): null}
@@ -107,14 +86,14 @@ const Header: React.FC = () => {
 						LOGO
 					</Typography>
 					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-						{data?.map((link, index) => (
+						{menus?.map((link, index) => (
 							<Button
 								key={index}
 								onClick={handleCloseNavMenu}
 								sx={{ my: 2, color: 'white', display: 'block' }}
 							>
-								<MuiLink component={NextLink} href={link.data.url}>
-									<Typography textAlign='center' color={theme.palette.primary.contrastText}>{link.data.label}</Typography>
+								<MuiLink component={NextLink} href={link.url}>
+									<Typography textAlign='center' color={theme.palette.primary.contrastText}>{link.label}</Typography>
 								</MuiLink>
 							</Button>
 						))}

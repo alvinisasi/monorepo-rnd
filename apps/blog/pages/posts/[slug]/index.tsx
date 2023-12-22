@@ -15,10 +15,10 @@ const PostDetail = ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) =
     const pathname = usePathname()
     const { data } = useQuery({
         queryKey: ['posts/' + pathname],
-        queryFn: () => getPostDetail(pathname || ''),
-        initialData: posts[0]
+        queryFn: () => getPostDetail(pathname?.replace('/posts/', '') || ''),
+        initialData: posts
     })
-    const { attributes } = data
+    const { attributes } = data[0]
 
     if(attributes){
         return(
@@ -70,7 +70,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
     const { slug } = ctx.params as IParams
-    const data = await getPostDetail(slug)
+    console.log('slug : ', slug.replace('/posts/', ''));
+    
+    const data = await getPostDetail(slug.replace('/posts/', ''))
   
     return {
         props: {

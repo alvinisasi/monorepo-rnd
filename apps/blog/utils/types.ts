@@ -96,3 +96,8 @@ export interface IParams extends ParsedUrlQuery {
 export interface PostDetailProps {
     data: PostResponse
 }
+
+export interface HeaderProps {
+    url: string;
+    label: string;
+}
