@@ -4,58 +4,71 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 import { getDate } from "@/utils/helper";
 import Image from "next/image";
 import parse from 'html-react-parser';
-import { useQuery } from "@tanstack/react-query";
-import { getPostDetail, getPosts } from "@/services/posts";
+import { HydrationBoundary, QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
+import { getPosts } from "@/services/posts";
 import { GetStaticProps, GetStaticPaths, InferGetStaticPropsType  } from 'next';
-import Error from "next/error";
 import { usePathname } from 'next/navigation'
+import { queries } from "@/queries";
+import { ColorRing } from 'react-loader-spinner'
+import PostSkeleton from "@/components/postSkeleton";
 
-const PostDetail = ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const PostDetail = ({ dehydratedPost }: InferGetStaticPropsType<typeof getStaticProps>) => {
     const theme = useTheme()
     const pathname = usePathname()
-    const { data } = useQuery({
-        queryKey: ['posts/' + pathname],
-        queryFn: () => getPostDetail(pathname?.replace('/posts/', '') || ''),
-        initialData: posts
-    })
-    const { attributes } = data[0]
+    const { data, isError, isLoading } = useQuery(queries.posts.detail(pathname?.replace('/posts/', '') || ''))
+    let arr = [0, 1, 2, 3, 4]
 
-    if(attributes){
+    if(data && !isError){
+        const attributes =  data[0].attributes
         return(
-            <Container>
-                <Typography 
-                    variant="h3" 
-                    color={theme.palette.primary.contrastText}
-                    sx={{ margin: 8, textAlign: 'center', fontWeight: 'bold' }}
-                >
-                    {attributes.title}
-                </Typography>
+            <HydrationBoundary state={dehydratedPost}>
+                {
+                    isLoading ? 
+                        <ColorRing 
+                            visible={true}
+                            height="80"
+                            width="80"
+                            ariaLabel="color-ring-loading"
+                            wrapperStyle={{}}
+                            wrapperClass="color-ring-wrapper"
+                            colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+                        /> :
+                        <Container>
+                            <Typography 
+                                variant="h3" 
+                                color={theme.palette.primary.contrastText}
+                                sx={{ margin: 8, textAlign: 'center', fontWeight: 'bold' }}
+                            >
+                                {attributes.title}
+                            </Typography>
 
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <DateRangeIcon style={{ fontSize: '14px', marginRight: '4px' }} />
-                    <Typography variant='caption'>
-                        {getDate(attributes.date)}
-                    </Typography>
-                </Box>
-                <Typography variant='caption' fontStyle='italic'>
-                    author: {attributes.author}
-                </Typography>
-                <Box sx={{ position: 'relative', width: '100%', minHeight: 450, marginTop: 8, marginBottom: 8 }}>
-                    <Image 
-                        src={`${process.env.NEXT_PUBLIC_STRAPI_API}${attributes.image.data.attributes.url}`}
-                        alt={attributes.title}
-                        fill
-                        objectFit='cover'
-                    />
-                </Box>
-                
-                <Typography variant='body2'>
-                    {parse(attributes.content)}
-                </Typography>
-            </Container>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <DateRangeIcon style={{ fontSize: '14px', marginRight: '4px' }} />
+                                <Typography variant='caption'>
+                                    {getDate(attributes.date)}
+                                </Typography>
+                            </Box>
+                            <Typography variant='caption' fontStyle='italic'>
+                                author: {attributes.author}
+                            </Typography>
+                            <Box sx={{ position: 'relative', width: '100%', minHeight: 450, marginTop: 8, marginBottom: 8 }}>
+                                <Image 
+                                    src={`${process.env.NEXT_PUBLIC_STRAPI_API}${attributes.image.data.attributes.url}`}
+                                    alt={attributes.title}
+                                    fill
+                                    objectFit='cover'
+                                />
+                            </Box>
+                            
+                            <Typography variant='body2'>
+                                {parse(attributes.content)}
+                            </Typography>
+                        </Container>
+                }
+            </HydrationBoundary>
         )
     } 
-    return <Error statusCode={404} />
+    return arr.map((item, index) => <PostSkeleton key={index}/> )
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -70,13 +83,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
     const { slug } = ctx.params as IParams
-    console.log('slug : ', slug.replace('/posts/', ''));
-    
-    const data = await getPostDetail(slug.replace('/posts/', ''))
+
+    const queryClient = new QueryClient()
+    queryClient.prefetchQuery(queries.posts.detail(slug.replace('/posts/', '')))
   
     return {
         props: {
-            posts: data 
+            dehydratedPost: dehydrate(queryClient)
         },
         revalidate: 60
     }

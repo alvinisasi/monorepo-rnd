@@ -8,9 +8,8 @@ import { getPosts } from "@/services/posts";
 import { useQuery } from "@tanstack/react-query";
 import PostSkeleton from "@/components/postSkeleton";
 import PostCard from "@/components/postCard";
-import { Post, PostResponse } from "@/utils/types";
+import { PostResponse } from "@/utils/types";
 import { Box, Container, Typography, useTheme } from "@mui/material";
-import { useEffect } from "react";
 
 let sliderSettings = {
     dots: true,
@@ -49,7 +48,7 @@ let sliderSettings = {
 let arr = [0, 1, 2, 3, 4]
 
 const Home = () => {
-    const { isLoading, isError, data, error } = useQuery({
+    const { isLoading, data } = useQuery({
         queryKey: ['posts'],
         queryFn: () => getPosts()
     })
