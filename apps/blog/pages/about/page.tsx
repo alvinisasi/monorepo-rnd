@@ -1,5 +1,3 @@
-'use client'
-
 import { Container, Typography, useTheme, Box } from "@mui/material"
 
 const About = () => {

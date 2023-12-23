@@ -1,5 +1,3 @@
-'use client'
-
 import Hero from "@/components/hero";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";

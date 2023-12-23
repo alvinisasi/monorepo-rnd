@@ -34,7 +34,8 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@commitlint/config-conventional": "18.4.3"
   },
   "main": "index.js",
   "author": "alvinisasi <azraqazravin@gmail.com>",
