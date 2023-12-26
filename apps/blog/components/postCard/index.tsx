@@ -6,6 +6,7 @@ import { getDate } from '@/utils/helper';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import { PostCardProps } from '@/utils/types';
 import { useRouter } from 'next/navigation';
+import { dynamicBlurDataUrl } from '@/utils/dynamicBlurImage';
 
 const Item = styled(Card)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -24,10 +25,14 @@ const PostCard: React.FC<PostCardProps> = ({ data, md }) => {
             <Item variant='outlined' sx={{ height: 550 }}>
                 <CardMedia sx={{ position: 'relative', width: '100%', height: '50%' }}>
                     <Image 
-                        src={`${process.env.NEXT_PUBLIC_STRAPI_API}${data.image.data.attributes?.url}`}
+                        src={`${process.env.NEXT_PUBLIC_STRAPI_API}${data.image.data.attributes.url}`}
                         alt={data.title}
                         fill
-                        objectFit='cover'
+                        style={{ objectFit: 'cover' }}
+                        priority={true}
+                        placeholder='empty'
+                        // blurDataURL={ dynamicBlurDataUrl(data.image.data.attributes.url)}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                 </CardMedia>
                 <CardContent>

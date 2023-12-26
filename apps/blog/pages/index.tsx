@@ -8,6 +8,7 @@ import PostSkeleton from "@/components/postSkeleton";
 import PostCard from "@/components/postCard";
 import { PostResponse } from "@/utils/types";
 import { Box, Container, Typography, useTheme } from "@mui/material";
+import { queries } from "@/queries";
 
 let sliderSettings = {
     dots: true,
@@ -46,10 +47,7 @@ let sliderSettings = {
 let arr = [0, 1, 2, 3, 4]
 
 const Home = () => {
-    const { isLoading, data } = useQuery({
-        queryKey: ['posts'],
-        queryFn: () => getPosts()
-    })
+  const { isLoading, data } = useQuery(queries.posts.all(''))
 	const theme = useTheme()
 
     return (

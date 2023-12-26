@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
+        minimumCacheTTL: 31536000,
         remotePatterns: [
             {
                 protocol: 'https',
@@ -21,7 +22,12 @@ const nextConfig = {
                 pathname: '**',
             },
         ],
-    }
+    },
+    compress: true
 }
 
-module.exports = nextConfig
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: process.env.ANALYZE === 'true',
+})
+
+module.exports = withBundleAnalyzer(nextConfig)

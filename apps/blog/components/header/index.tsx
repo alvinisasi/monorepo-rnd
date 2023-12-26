@@ -9,26 +9,26 @@ import { HeaderProps } from "@/utils/types";
 const Header = ({ menus }: { menus: HeaderProps[] }) => {
 	const theme = useTheme()
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-	const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+	// const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
 	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorElNav(event.currentTarget);
 	};
-	const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-		setAnchorElUser(event.currentTarget);
-	};
+	// const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+	// 	setAnchorElUser(event.currentTarget);
+	// };
 
 	const handleCloseNavMenu = () => {
 		setAnchorElNav(null);
 	};
 
-	const handleCloseUserMenu = () => {
-		setAnchorElUser(null);
-	};
+	// const handleCloseUserMenu = () => {
+	// 	setAnchorElUser(null);
+	// };
     return (
-        <AppBar position="static">
-			<Container maxWidth="xl">
-				<Toolbar disableGutters>
+        <AppBar position="static" sx={{ width: '100%' }}>
+			<Container maxWidth="xl" sx={{ width: '100%' }}>
+				<Toolbar disableGutters sx={{ width: '100%' }}>
 					<Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
 						<IconButton
 							size="large"
@@ -36,7 +36,7 @@ const Header = ({ menus }: { menus: HeaderProps[] }) => {
 							aria-controls="menu-appbar"
 							aria-haspopup="true"
 							onClick={handleOpenNavMenu}
-							color="inherit"
+							color="primary"
 							>
 							<MenuItem />
 						</IconButton>

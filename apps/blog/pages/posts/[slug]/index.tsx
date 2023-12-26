@@ -57,6 +57,7 @@ const PostDetail = ({ dehydratedPost }: InferGetStaticPropsType<typeof getStatic
                                     alt={attributes.title}
                                     fill
                                     objectFit='cover'
+                                    priority={true}
                                 />
                             </Box>
                             
@@ -72,7 +73,7 @@ const PostDetail = ({ dehydratedPost }: InferGetStaticPropsType<typeof getStatic
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    const data = await getPosts()
+    const data = await getPosts('')
     const pathsWithParams = data?.map((item: PostResponse) => ({ params: { slug: item.attributes.slug }}))
 
     return {

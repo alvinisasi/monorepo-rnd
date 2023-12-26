@@ -4,9 +4,9 @@ import { getPostDetail, getPosts } from "@/services/posts";
 
 export const queries = createQueryKeyStore({
     posts: {
-        all: () => ({
+        all: (query: string) => ({
             queryKey: ['posts'],
-            queryFn: getPosts()
+            queryFn: () => getPosts(query)
         }),
         detail: (slug: string) => ({
             queryKey: [slug],

@@ -9,10 +9,11 @@ const Footer: React.FC = () => {
                 // position: 'absolute', 
                 // bottom: 0,
                 padding: '32px',
-                marginTop: '16px'
+                marginTop: '16px',
+                width: '100%'
             }}
         >
-            <Container>
+            <Container sx={{ width: '100%' }}>
                 <Typography textAlign='center'>&copy; Copyright {date.getFullYear()}, Alvin Miftah</Typography>
             </Container>
         </Box>

@@ -1,9 +1,12 @@
 import Footer from '@/components/footer';
 import Header from '@/components/header';
+import { AppConfig } from '@/utils/AppConfig';
 import { Providers } from '@/utils/providers';
 import { HeaderProps } from '@/utils/types';
-import type { AppProps, AppContext, AppInitialProps } from 'next/app';
-import App from 'next/app';
+import type { AppProps } from 'next/app';
+import Head from 'next/head';
+import './globals.css'
+import { AppCacheProvider } from '@mui/material-nextjs/v13-pagesRouter';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
     const menus: HeaderProps[] = [
@@ -14,19 +17,17 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
     return (
         <Providers options={{ key: 'mui-theme' }}>
-            <Header menus={menus} />
-            <Component {...pageProps} />
-            <Footer />
+            <AppCacheProvider>
+                <Head>
+                    <title>{AppConfig.title}</title>
+                    <meta name='description' content={AppConfig.description} />
+                </Head>
+                <Header menus={menus} />
+                <Component {...pageProps} />
+                <Footer />
+            </AppCacheProvider>
         </Providers>
     )
 };
-
-// MyApp.getInitialProps = async (
-//     context: AppContext
-//   ): Promise<AppInitialProps> => {
-//     const ctx = await App.getInitialProps(context)
-   
-//     return { ...ctx }
-//   }
 
 export default MyApp;

@@ -8,16 +8,16 @@ import { useEffect, useState } from "react";
 import PostSkeleton from "@/components/postSkeleton";
 import Input from "@/components/input";
 import { getPosts } from "@/services/posts";
+import { queries } from "@/queries";
+import { useDebounce } from "@/utils/hooks";
 
 export const revalidate = 60
 
 const Posts = () => {
-    const { isLoading, isError, data, error } = useQuery({
-        queryKey: ['posts'],
-        queryFn: () => getPosts()
-    })
     const [posts, setPosts] = useState<Post[]>([])
     const [search, setSearch] = useState('')
+    const debounceValue = useDebounce(search, 500)
+    const { isLoading, data } = useQuery(queries.posts.all(debounceValue))
 
     useEffect(() => {
         if(!isLoading){
@@ -72,7 +72,7 @@ const Posts = () => {
 export async function getStaticProps() {
     const queryClient = new QueryClient()
   
-    await queryClient.prefetchQuery({ queryKey: ['posts'], queryFn: () => getPosts() })
+    await queryClient.prefetchQuery(queries.posts.all(''))
   
     return {
         props: {
