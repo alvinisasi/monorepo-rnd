@@ -11,6 +11,16 @@ export interface Post {
     slug: string
 }
 
+export interface About {
+    title: string
+    content: string
+}
+
+export interface AboutResponse {
+    id: number
+    attributes: About
+}
+
 export interface PostResponse {
     id: number
     attributes: Post

@@ -1,5 +1,6 @@
 import { PostResponse } from "@/utils/types"
 import axios from "axios"
+import { client } from "./client"
 
 const url = process.env.NEXT_PUBLIC_STRAPI_API || ''
 const token = process.env.NEXT_PUBLIC_STRAPI_TOKEN_API || ''

@@ -1,5 +1,6 @@
 import { createQueryKeyStore } from "@lukemorales/query-key-factory";
 import { getPostDetail, getPosts } from "@/services/posts";
+import { getAbout } from "@/services/about";
 
 
 export const queries = createQueryKeyStore({
@@ -13,5 +14,11 @@ export const queries = createQueryKeyStore({
             queryFn: () => getPostDetail(slug),
             onError: (err: Error) => err
         }),
+    },
+    about: {
+        all: () => ({
+            queryKey: ['about'],
+            queryFn: () => getAbout()
+        })
     }
 })

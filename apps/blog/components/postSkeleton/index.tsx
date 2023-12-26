@@ -1,4 +1,4 @@
-import { Card, CardContent, CardMedia, Skeleton, Stack } from "@mui/material"
+import { Card, CardContent, CardMedia, Skeleton } from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
 
 const PostSkeleton: React.FC = () => {

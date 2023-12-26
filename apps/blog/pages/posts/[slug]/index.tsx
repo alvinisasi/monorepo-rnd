@@ -61,7 +61,7 @@ const PostDetail = ({ dehydratedPost }: InferGetStaticPropsType<typeof getStatic
                                 />
                             </Box>
                             
-                            <Typography variant='body2'>
+                            <Typography variant='body1'>
                                 {parse(attributes.content)}
                             </Typography>
                         </Container>

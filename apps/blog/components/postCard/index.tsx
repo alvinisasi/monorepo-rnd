@@ -1,12 +1,11 @@
 import { styled } from '@mui/material/styles';
-import { Box, Button, Card, CardActions, CardContent, CardMedia, Container, Divider, Typography, useTheme } from "@mui/material"
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Divider, Typography, useTheme } from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
 import Image from 'next/image';
 import { getDate } from '@/utils/helper';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import { PostCardProps } from '@/utils/types';
 import { useRouter } from 'next/navigation';
-import { dynamicBlurDataUrl } from '@/utils/dynamicBlurImage';
 
 const Item = styled(Card)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -31,7 +30,6 @@ const PostCard: React.FC<PostCardProps> = ({ data, md }) => {
                         style={{ objectFit: 'cover' }}
                         priority={true}
                         placeholder='empty'
-                        // blurDataURL={ dynamicBlurDataUrl(data.image.data.attributes.url)}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                 </CardMedia>
