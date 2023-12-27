@@ -70,7 +70,7 @@ export function Providers({ children, options }: ProviderProps) {
             {children}
           </ThemeProvider>
         </CacheProvider>
-        <ReactQueryDevtools initialIsOpen={true} />
+        <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   )
 }

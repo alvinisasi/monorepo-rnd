@@ -1,15 +1,16 @@
-'use client'
-
 import { useTheme } from "@mui/material/styles";
 import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Typography, Link as MuiLink, Divider } from "@mui/material";
 import NextLink from "next/link";
 import { useState } from "react";
 import { HeaderProps } from "@/utils/types";
+import { usePathname } from "next/navigation";
 
 const Header = ({ menus }: { menus: HeaderProps[] }) => {
 	const theme = useTheme()
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 	// const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+	const pathname = usePathname()
+	
 
 	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorElNav(event.currentTarget);
@@ -90,7 +91,7 @@ const Header = ({ menus }: { menus: HeaderProps[] }) => {
 							<Button
 								key={link.label}
 								onClick={handleCloseNavMenu}
-								sx={{ my: 2, ml: 3, color: 'white', display: 'block' }}
+								sx={{ my: 2, ml: 3, color: 'white', display: 'block', borderBottom: pathname === link.url ? `3px ${theme.palette.primary.contrastText} solid` : 'none' }}
 							>
 								<MuiLink component={NextLink} href={link.url}>
 									<Typography textAlign='center' variant="body1" color={theme.palette.primary.contrastText} fontWeight={'bold'} fontFamily='Open Sans'>{link.label}</Typography>
