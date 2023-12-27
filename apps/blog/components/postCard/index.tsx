@@ -20,7 +20,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, md }) => {
     const router = useRouter()
     
     return(
-        <Grid md={md} xs={12} key={data.title}>
+        <Grid md={md} xs={12} key={data.title} sx={{ animation: '2s anim-lineUp ease-out', }}>
             <Item variant='outlined' sx={{ height: 550 }}>
                 <CardMedia sx={{ position: 'relative', width: '100%', height: '50%' }}>
                     <Image 
