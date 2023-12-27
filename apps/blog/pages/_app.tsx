@@ -10,7 +10,7 @@ import { AppCacheProvider } from '@mui/material-nextjs/v13-pagesRouter';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
     const menus: HeaderProps[] = [
-        { url: '/', label: 'Home' },
+        // { url: '/', label: 'Home' },
         { url: '/posts', label: 'Posts' },
         { url: '/about', label: 'About' }
     ]
@@ -23,7 +23,9 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
                     <meta name='description' content={AppConfig.description} />
                 </Head>
                 <Header menus={menus} />
-                <Component {...pageProps} />
+                <main style={{ paddingTop: '2rem' }}>
+                    <Component {...pageProps} />
+                </main>
                 <Footer />
             </AppCacheProvider>
         </Providers>

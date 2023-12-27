@@ -1,7 +1,7 @@
 'use client'
 
 import { useTheme } from "@mui/material/styles";
-import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Typography, Link as MuiLink } from "@mui/material";
+import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Typography, Link as MuiLink, Divider } from "@mui/material";
 import NextLink from "next/link";
 import { useState } from "react";
 import { HeaderProps } from "@/utils/types";
@@ -26,7 +26,7 @@ const Header = ({ menus }: { menus: HeaderProps[] }) => {
 	// 	setAnchorElUser(null);
 	// };
     return (
-        <AppBar position="static" sx={{ width: '100%' }}>
+        <AppBar component='nav' position="fixed" sx={{ width: '100%' }}>
 			<Container maxWidth="xl" sx={{ width: '100%' }}>
 				<Toolbar disableGutters sx={{ width: '100%' }}>
 					<Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -58,10 +58,10 @@ const Header = ({ menus }: { menus: HeaderProps[] }) => {
 								display: { xs: 'block', md: 'none' },
 							}}
 						>
-							{ menus && menus?.length > 0 ? menus?.map((link, index) => (
-								<MenuItem key={index} onClick={handleCloseNavMenu}>
+							{ menus && menus?.length > 0 ? menus?.map((link) => (
+								<MenuItem key={link.label} onClick={handleCloseNavMenu}>
 									<MuiLink component={NextLink} href={link.url}>
-										<Typography textAlign='center' color={theme.palette.primary.contrastText}>{link.label}</Typography>
+										<Typography textAlign='center' variant="body1" color={theme.palette.primary.contrastText} fontWeight='bold' fontFamily='Open Sans'>{link.label}</Typography>
 									</MuiLink>
 								</MenuItem>
 							)): null}
@@ -71,29 +71,29 @@ const Header = ({ menus }: { menus: HeaderProps[] }) => {
 						variant="h5"
 						noWrap
 						component="a"
-						href="#app-bar-with-responsive-menu"
+						href="/"
 						sx={{
 							mr: 2,
-							display: { xs: 'flex', md: 'none' },
+							display: { xs: 'flex' },
 							flexGrow: 1,
 							fontFamily: 'monospace',
 							fontWeight: 700,
 							letterSpacing: '.3rem',
-							color: 'inherit',
+							color: 'white',
 							textDecoration: 'none',
 						}}
 					>
-						LOGO
+						DanuPusingan
 					</Typography>
-					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-						{menus?.map((link, index) => (
+					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'end' }}>
+						{menus?.map((link) => (
 							<Button
-								key={index}
+								key={link.label}
 								onClick={handleCloseNavMenu}
-								sx={{ my: 2, color: 'white', display: 'block' }}
+								sx={{ my: 2, ml: 3, color: 'white', display: 'block' }}
 							>
 								<MuiLink component={NextLink} href={link.url}>
-									<Typography textAlign='center' color={theme.palette.primary.contrastText}>{link.label}</Typography>
+									<Typography textAlign='center' variant="body1" color={theme.palette.primary.contrastText} fontWeight={'bold'} fontFamily='Open Sans'>{link.label}</Typography>
 								</MuiLink>
 							</Button>
 						))}

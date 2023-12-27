@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3004",
     "build": "ANALYZE=true next build",
     "start": "next start -p 3001",
     "lint": "next lint"
@@ -31,7 +31,8 @@
     "react-loader-spinner": "6.1.1-0",
     "react-slick": "^0.29.0",
     "sharp": "^0.33.1",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "typed.js": "^2.1.0"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "18.4.3",
