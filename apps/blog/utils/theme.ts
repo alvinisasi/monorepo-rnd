@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme } from '@mui/material/styles'
 
 const light = {
     main: '#D5CEA3',
@@ -15,7 +15,7 @@ const dark = {
 }
 
 export const theme = createTheme({
- palette: {
-   primary: dark,
- },
-});
+    palette: {
+        primary: dark,
+    },
+})

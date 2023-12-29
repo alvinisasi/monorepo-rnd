@@ -1,4 +1,4 @@
-import { ParsedUrlQuery } from "querystring"
+import { ParsedUrlQuery } from 'querystring'
 
 export interface Post {
     title: string
@@ -44,12 +44,12 @@ export interface getPostsProps {
 export interface Image {
     data: ImageData
 }
-  
+
 export interface ImageData {
     id: number
     attributes: ImageAttributes
 }
-  
+
 export interface ImageAttributes {
     name: string
     alternativeText: any
@@ -68,12 +68,12 @@ export interface ImageAttributes {
     createdAt: string
     updatedAt: string
 }
-  
+
 export interface ImageFormats {
     thumbnail: ImageThumbnail
     small: ImageSmall
 }
-  
+
 export interface ImageThumbnail {
     name: string
     hash: string
@@ -85,7 +85,7 @@ export interface ImageThumbnail {
     size: number
     url: string
 }
-  
+
 export interface ImageSmall {
     name: string
     hash: string
@@ -97,7 +97,7 @@ export interface ImageSmall {
     size: number
     url: string
 }
-  
+
 export interface IParams extends ParsedUrlQuery {
     id: string
     slug: string
@@ -108,6 +108,6 @@ export interface PostDetailProps {
 }
 
 export interface HeaderProps {
-    url: string;
-    label: string;
+    url: string
+    label: string
 }

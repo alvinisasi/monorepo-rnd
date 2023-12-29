@@ -1,38 +1,54 @@
-import { queries } from "@/queries"
-import { Container, Typography, useTheme, Box } from "@mui/material"
-import { HydrationBoundary, QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
-import { GetStaticProps, InferGetStaticPropsType } from "next"
-import { ColorRing } from "react-loader-spinner"
-import parse from 'html-react-parser';
+import { queries } from '@/queries'
+import { Container, Typography, useTheme, Box } from '@mui/material'
+import {
+    HydrationBoundary,
+    QueryClient,
+    dehydrate,
+    useQuery,
+} from '@tanstack/react-query'
+import { GetStaticProps, InferGetStaticPropsType } from 'next'
+import { ColorRing } from 'react-loader-spinner'
+import parse from 'html-react-parser'
 
 export const revalidate = 60
 
-const About = ({ dehydratedState }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const About = ({
+    dehydratedState,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
     const theme = useTheme()
     const { data, isLoading } = useQuery(queries.about.all())
-    
-    if(data){
+
+    if (data) {
         const attributes = data[0].attributes
-        return(
+        return (
             <HydrationBoundary state={dehydratedState}>
                 <Box sx={{ flexGrow: 1 }}>
-                {
-                    isLoading ? 
-                        <ColorRing 
+                    {isLoading ? (
+                        <ColorRing
                             visible={true}
-                            height="80"
-                            width="80"
-                            ariaLabel="color-ring-loading"
+                            height='80'
+                            width='80'
+                            ariaLabel='color-ring-loading'
                             wrapperStyle={{}}
-                            wrapperClass="color-ring-wrapper"
-                            colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+                            wrapperClass='color-ring-wrapper'
+                            colors={[
+                                '#e15b64',
+                                '#f47e60',
+                                '#f8b26a',
+                                '#abbd81',
+                                '#849b87',
+                            ]}
                         />
-                        :
+                    ) : (
                         <Container>
-                            <Typography 
-                                variant="h3" 
+                            <Typography
+                                variant='h3'
                                 color={theme.palette.primary.contrastText}
-                                sx={{ margin: 8, textAlign: 'center', fontWeight: 'bold' }}
+                                sx={{
+                                    margin: 8,
+                                    textAlign: 'center',
+                                    fontWeight: 'bold',
+                                }}
                             >
                                 {attributes.title}
                             </Typography>
@@ -40,28 +56,28 @@ const About = ({ dehydratedState }: InferGetStaticPropsType<typeof getStaticProp
                                 {parse(attributes.content)}
                             </Typography>
                         </Container>
-                } 
-                    
+                    )}
                 </Box>
             </HydrationBoundary>
         )
     }
-    return <Typography variant="body1" color={theme.palette.primary.contrastText}>
-        No Posts
-    </Typography>
+    return (
+        <Typography variant='body1' color={theme.palette.primary.contrastText}>
+            No Posts
+        </Typography>
+    )
 }
-
 
 export const getStaticProps: GetStaticProps = async () => {
     const queryClient = new QueryClient()
-  
+
     await queryClient.prefetchQuery(queries.about.all())
-  
+
     return {
         props: {
             dehydratedState: dehydrate(queryClient),
         },
-        revalidate: revalidate
+        revalidate: revalidate,
     }
 }
 

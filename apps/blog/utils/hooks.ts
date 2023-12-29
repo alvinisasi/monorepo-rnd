@@ -1,16 +1,19 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from 'react'
 
 export const useDebounce = (value: string, delay: number = 500): string => {
-    const [debounceValue, setDebounceValue] = useState<string>("")
-    const timeRef = useRef<number>();
+    const [debounceValue, setDebounceValue] = useState<string>('')
+    const timeRef = useRef<number>()
 
     useEffect(() => {
         if (timeRef.current) {
-            clearTimeout(timeRef.current);
+            clearTimeout(timeRef.current)
         }
-        timeRef.current = window.setTimeout(() => setDebounceValue(value), delay)
+        timeRef.current = window.setTimeout(
+            () => setDebounceValue(value),
+            delay
+        )
 
-        return() => {
+        return () => {
             clearTimeout(timeRef.current)
         }
     }, [value, delay])

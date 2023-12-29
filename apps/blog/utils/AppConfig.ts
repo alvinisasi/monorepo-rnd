@@ -3,4 +3,4 @@ export const AppConfig = {
     title: 'Blog',
     description: 'Simple blog built with Next JS',
     locale: 'en',
-  };
+}
