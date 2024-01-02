@@ -2,13 +2,14 @@ import Hero from '@/components/hero'
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
-import { getPosts } from '@/services/posts'
+import { getAllPosts, getPosts } from '@/services/posts'
 import { useQuery } from '@tanstack/react-query'
 import PostSkeleton from '@/components/postSkeleton'
 import PostCard from '@/components/postCard'
-import { PostResponse } from '@/utils/types'
+import { APIResponse, PostResponse } from '@/utils/types'
 import { Box, Container, Typography, useTheme } from '@mui/material'
 import { queries } from '@/queries'
+import { useEffect } from 'react'
 
 let sliderSettings = {
     dots: true,
@@ -47,11 +48,14 @@ let sliderSettings = {
 let arr = [0, 1, 2, 3, 4]
 
 const Home = () => {
-    const { isLoading, data } = useQuery<PostResponse[], Error>(
+    const { isLoading, data } = useQuery<APIResponse, Error>(
         queries.posts.all('')
     )
     const theme = useTheme()
-
+    useEffect(() => {
+        getAllPosts()
+        console.log(`data : `, data)
+    }, [])
     return (
         <>
             <Hero />
@@ -59,8 +63,8 @@ const Home = () => {
                 <Slider {...sliderSettings}>
                     {isLoading ? (
                         arr.map((item, index) => <PostSkeleton key={index} />)
-                    ) : data && data?.length > 0 ? (
-                        data?.map((post: PostResponse) => {
+                    ) : data?.data && data.data?.length > 0 ? (
+                        data.data?.map((post) => {
                             return (
                                 <Box sx={{ padding: '1em' }}>
                                     <PostCard data={post.attributes} md={3} />

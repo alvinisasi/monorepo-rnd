@@ -17,7 +17,7 @@ export const queries: any = createQueryKeyStore({
     about: {
         all: () => ({
             queryKey: ['about'],
-            queryFn: getAbout(),
+            queryFn: () => getAbout(),
         }),
     },
 })
