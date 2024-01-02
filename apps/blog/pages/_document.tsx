@@ -39,9 +39,6 @@ const MyDocument = (props: DocumentProps & DocumentHeadTagsProps) => {
     )
 }
 
-MyDocument.getInitialProps = async (ctx: DocumentContext) => {
-    const initialProps = await documentGetInitialProps(ctx)
-    return { ...initialProps }
-}
+MyDocument.getInitialProps = documentGetInitialProps
 
 export default MyDocument

@@ -6,7 +6,7 @@ import { HeaderProps } from '@/utils/types'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import './globals.css'
-import { AppCacheProvider } from '@mui/material-nextjs/v13-pagesRouter'
+import { AppCacheProvider } from '@mui/material-nextjs/v14-pagesRouter'
 import { DehydratedState } from '@tanstack/react-query'
 
 const MyApp = ({
