@@ -47,7 +47,9 @@ let sliderSettings = {
 let arr = [0, 1, 2, 3, 4]
 
 const Home = () => {
-    const { isLoading, data } = useQuery(queries.posts.all(''))
+    const { isLoading, data } = useQuery<PostResponse[], Error>(
+        queries.posts.all('')
+    )
     const theme = useTheme()
 
     return (

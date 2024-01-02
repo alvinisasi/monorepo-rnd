@@ -1,43 +1,41 @@
-import { IParams, PostResponse } from '@/utils/types'
+import { IParams, Post, PostResponse } from '@/utils/types'
 import { Box, Container, Typography, useTheme } from '@mui/material'
 import DateRangeIcon from '@mui/icons-material/DateRange'
 import { getDate } from '@/utils/helper'
 import Image from 'next/image'
 import parse from 'html-react-parser'
-import {
-    HydrationBoundary,
-    QueryClient,
-    dehydrate,
-    useQuery,
-} from '@tanstack/react-query'
+import { QueryClient, dehydrate, useQuery } from '@tanstack/react-query'
 import { getPosts } from '@/services/posts'
 import { GetStaticProps, GetStaticPaths, InferGetStaticPropsType } from 'next'
-import { usePathname } from 'next/navigation'
 import { queries } from '@/queries'
 import { ColorRing } from 'react-loader-spinner'
 import PostSkeleton from '@/components/postSkeleton'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+
+const revalidate = 60
 
 const PostDetail = ({
-    dehydratedPost,
+    dehydratedState,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
     const theme = useTheme()
-    const pathname = usePathname()
-    const { data, isError, isLoading } = useQuery(
-        queries.posts.detail(pathname?.replace('/posts/', '') || '')
+    const { asPath } = useRouter()
+    const { data, isError, isLoading } = useQuery<PostResponse[], Error>(
+        queries.posts.detail(asPath?.replace('/posts/', '') || '')
     )
     let arr = [0, 1, 2, 3, 4]
+    useEffect(() => console.log(data), [])
 
-    if (data && !isError) {
-        const attributes = data[0].attributes
+    if (data && !isLoading && !isError) {
+        const attributes = data[0]?.attributes as Post
         return (
-            <HydrationBoundary state={dehydratedPost}>
+            <>
                 {isLoading ? (
                     <ColorRing
                         visible={true}
                         height='80'
                         width='80'
                         ariaLabel='color-ring-loading'
-                        wrapperStyle={{}}
                         wrapperClass='color-ring-wrapper'
                         colors={[
                             '#e15b64',
@@ -95,7 +93,7 @@ const PostDetail = ({
                         </Typography>
                     </Container>
                 )}
-            </HydrationBoundary>
+            </>
         )
     }
     return arr.map((item, index) => <PostSkeleton key={index} />)
@@ -103,6 +101,10 @@ const PostDetail = ({
 
 export const getStaticPaths: GetStaticPaths = async () => {
     const data = await getPosts('')
+    const queryClient = new QueryClient()
+
+    // await queryClient.prefetchQuery(queries.posts.all(''))
+    // const data = await queryClient.getQueryData(['posts'])
     const pathsWithParams = data?.map((item: PostResponse) => ({
         params: { slug: item.attributes.slug },
     }))
@@ -121,9 +123,9 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
 
     return {
         props: {
-            dehydratedPost: dehydrate(queryClient),
+            dehydratedState: dehydrate(queryClient),
         },
-        revalidate: 60,
+        revalidate,
     }
 }
 

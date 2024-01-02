@@ -2,13 +2,20 @@
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { useState } from 'react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import {
+    type DehydratedState,
+    HydrationBoundary,
+    QueryClient,
+    QueryClientProvider,
+    dehydrate,
+} from '@tanstack/react-query'
 import createCache from '@emotion/cache'
 import { useServerInsertedHTML } from 'next/navigation'
 import { CacheProvider } from '@emotion/react'
 import { ThemeProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import { theme } from './theme'
+import { AppProps } from 'next/app'
 
 interface ProviderOptions {
     key: string
@@ -17,9 +24,14 @@ interface ProviderOptions {
 interface ProviderProps {
     children: React.ReactNode
     options: ProviderOptions
+    dehydratedState: DehydratedState
 }
 
-export function Providers({ children, options }: ProviderProps) {
+export function Providers({
+    children,
+    options,
+    dehydratedState,
+}: ProviderProps) {
     const [queryClient] = useState(
         new QueryClient({ defaultOptions: { queries: { staleTime: 5000 } } })
     )
@@ -64,12 +76,14 @@ export function Providers({ children, options }: ProviderProps) {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <CacheProvider value={cache}>
-                <ThemeProvider theme={theme}>
-                    <CssBaseline />
-                    {children}
-                </ThemeProvider>
-            </CacheProvider>
+            <HydrationBoundary state={dehydratedState}>
+                <CacheProvider value={cache}>
+                    <ThemeProvider theme={theme}>
+                        <CssBaseline />
+                        {children}
+                    </ThemeProvider>
+                </CacheProvider>
+            </HydrationBoundary>
             <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
     )

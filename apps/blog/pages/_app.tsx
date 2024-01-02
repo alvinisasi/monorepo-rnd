@@ -7,8 +7,12 @@ import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import './globals.css'
 import { AppCacheProvider } from '@mui/material-nextjs/v13-pagesRouter'
+import { DehydratedState } from '@tanstack/react-query'
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp = ({
+    Component,
+    pageProps,
+}: AppProps<{ dehydratedState: DehydratedState }>) => {
     const menus: HeaderProps[] = [
         // { url: '/', label: 'Home' },
         { url: '/posts', label: 'Posts' },
@@ -16,7 +20,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     ]
 
     return (
-        <Providers options={{ key: 'mui-theme' }}>
+        <Providers
+            options={{ key: 'mui-theme' }}
+            dehydratedState={pageProps.dehydratedState}
+        >
             <AppCacheProvider>
                 <Head>
                     <title>{AppConfig.title}</title>
