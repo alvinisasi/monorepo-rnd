@@ -1,6 +1,6 @@
-import { PostResponse } from '@/utils/types'
+import { Post, PostResponse } from '@/utils/types'
 import axios from 'axios'
-import { client } from './client'
+import ky from 'ky'
 
 const url = process.env.NEXT_PUBLIC_STRAPI_API || ''
 const token = process.env.NEXT_PUBLIC_STRAPI_TOKEN_API || ''
@@ -16,10 +16,10 @@ export const getPosts = async (query: string) => {
         `${url}/api/posts?filters[title][$contains]=${query}&populate=*`,
         headers
     )
-    return posts.data.data
+    return posts.data.data as PostResponse[]
 }
 
-export const getPostDetail = async (slug: string): Promise<PostResponse[]> => {
+export const getPostDetail = async (slug: string) => {
     const headers = {
         headers: {
             'Content-Type': 'application/json',
@@ -30,5 +30,17 @@ export const getPostDetail = async (slug: string): Promise<PostResponse[]> => {
         `${url}/api/posts?filters[slug][$eq]=${slug}&populate=*`,
         headers
     )
-    return posts.data.data
+    return posts.data.data as PostResponse[]
+    // const json: any = posts.json()
+    // return json.data as PostResponse[]
+}
+
+export const getAllPosts = async () => {
+    const headers = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token,
+        },
+    }
+    return ky.get(`${url}/api/posts?populate=*`, headers)
 }

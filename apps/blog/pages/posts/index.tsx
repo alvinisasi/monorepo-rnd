@@ -1,11 +1,6 @@
 import { Box, Container, Typography, useTheme } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
-import {
-    HydrationBoundary,
-    QueryClient,
-    dehydrate,
-    useQuery,
-} from '@tanstack/react-query'
+import { QueryClient, dehydrate, useQuery } from '@tanstack/react-query'
 import { Post, PostResponse } from '@/utils/types'
 import PostCard from '@/components/postCard'
 import { useEffect, useState } from 'react'
@@ -22,16 +17,16 @@ const Posts = ({
     dehydratedState,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
     const [posts, setPosts] = useState<Post[]>([])
-    const [search, setSearch] = useState('')
+    const [search, setSearch] = useState<string>('')
     const debounceValue = useDebounce(search, 500)
-    const { isLoading, data } = useQuery(queries.posts.all(debounceValue))
+    const { isLoading, data } = useQuery<PostResponse[], Error>(
+        queries.posts.all(debounceValue)
+    )
 
     useEffect(() => {
         if (!isLoading) {
-            let postData: Post[] = data?.map(
-                (post: PostResponse) => post.attributes
-            )
-            setPosts(postData)
+            let postData = data?.map((post: PostResponse) => post.attributes)
+            setPosts(postData as Post[])
         }
     }, [isLoading])
     let arr = [0, 1, 2]
@@ -49,51 +44,43 @@ const Posts = ({
     }
 
     return (
-        <HydrationBoundary state={dehydratedState}>
-            <Box sx={{ flexGrow: 1 }}>
-                <Container>
-                    <Typography
-                        variant='h3'
-                        color={theme.palette.primary.contrastText}
-                        sx={{
-                            margin: 8,
-                            textAlign: 'center',
-                            fontWeight: 'bold',
-                        }}
-                    >
-                        Posts
-                    </Typography>
-                    <Input
-                        value={search}
-                        onChange={(e) => handleSearch(e.target.value)}
-                    />
-                    <Grid container spacing={4}>
-                        {isLoading ? (
-                            arr.map((item, index) => (
-                                <PostSkeleton key={index} />
-                            ))
-                        ) : posts && posts?.length > 0 ? (
-                            posts?.map((post) => {
-                                return (
-                                    <PostCard
-                                        md={4}
-                                        data={post}
-                                        key={post.slug}
-                                    />
-                                )
-                            })
-                        ) : (
-                            <Typography
-                                variant='body1'
-                                color={theme.palette.primary.contrastText}
-                            >
-                                No Posts
-                            </Typography>
-                        )}
-                    </Grid>
-                </Container>
-            </Box>
-        </HydrationBoundary>
+        <Box sx={{ flexGrow: 1 }}>
+            <Container>
+                <Typography
+                    variant='h3'
+                    color={theme.palette.primary.contrastText}
+                    sx={{
+                        margin: 8,
+                        textAlign: 'center',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    Posts
+                </Typography>
+                <Input
+                    value={search}
+                    onChange={(e) => handleSearch(e.target.value)}
+                />
+                <Grid container spacing={4}>
+                    {isLoading ? (
+                        arr.map((item, index) => <PostSkeleton key={index} />)
+                    ) : posts && posts.length > 0 ? (
+                        posts.map((post) => {
+                            return (
+                                <PostCard md={4} data={post} key={post.slug} />
+                            )
+                        })
+                    ) : (
+                        <Typography
+                            variant='body1'
+                            color={theme.palette.primary.contrastText}
+                        >
+                            No Posts
+                        </Typography>
+                    )}
+                </Grid>
+            </Container>
+        </Box>
     )
 }
 
@@ -106,7 +93,7 @@ export const getStaticProps: GetStaticProps = async () => {
         props: {
             dehydratedState: dehydrate(queryClient),
         },
-        revalidate: revalidate,
+        revalidate,
     }
 }
 
