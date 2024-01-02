@@ -1,7 +1,7 @@
 import { Box, Container, Typography, useTheme } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import { QueryClient, dehydrate, useQuery } from '@tanstack/react-query'
-import { Post, PostResponse } from '@/utils/types'
+import { APIResponse, Post, PostResponse } from '@/utils/types'
 import PostCard from '@/components/postCard'
 import { useEffect, useState } from 'react'
 import PostSkeleton from '@/components/postSkeleton'
@@ -19,13 +19,15 @@ const Posts = ({
     const [posts, setPosts] = useState<Post[]>([])
     const [search, setSearch] = useState<string>('')
     const debounceValue = useDebounce(search, 500)
-    const { isLoading, data } = useQuery<PostResponse[], Error>(
+    const { isLoading, data } = useQuery<APIResponse, Error>(
         queries.posts.all(debounceValue)
     )
 
     useEffect(() => {
-        if (!isLoading) {
-            let postData = data?.map((post: PostResponse) => post.attributes)
+        if (!isLoading && data?.data) {
+            let postData = data?.data.map(
+                (post: PostResponse) => post.attributes
+            )
             setPosts(postData as Post[])
         }
     }, [isLoading])
@@ -35,9 +37,13 @@ const Posts = ({
 
     const handleSearch = (value: string) => {
         setSearch(value)
-        const result = data?.filter((item: PostResponse) =>
-            item.attributes.title.toLowerCase().includes(value.toLowerCase())
-        )
+        const result =
+            data?.data &&
+            data.data?.filter((item: PostResponse) =>
+                item.attributes.title
+                    .toLowerCase()
+                    .includes(value.toLowerCase())
+            )
 
         let postData = result?.map((post: PostResponse) => post.attributes)
         setPosts(postData as Post[])

@@ -1,5 +1,9 @@
 import { ParsedUrlQuery } from 'querystring'
 
+export interface APIResponse {
+    data?: PostResponse[]
+    meta?: MetaResponse
+}
 export interface Post {
     title: string
     description: string
@@ -110,4 +114,15 @@ export interface PostDetailProps {
 export interface HeaderProps {
     url: string
     label: string
+}
+
+export interface MetaResponse {
+    pagination: Pagination
+}
+
+export interface Pagination {
+    page: number
+    pageSize: number
+    pageCount: number
+    total: number
 }

@@ -1,4 +1,4 @@
-import { IParams, Post, PostResponse } from '@/utils/types'
+import { APIResponse, IParams, Post, PostResponse } from '@/utils/types'
 import { Box, Container, Typography, useTheme } from '@mui/material'
 import DateRangeIcon from '@mui/icons-material/DateRange'
 import { getDate } from '@/utils/helper'
@@ -6,12 +6,18 @@ import Image from 'next/image'
 import parse from 'html-react-parser'
 import { QueryClient, dehydrate, useQuery } from '@tanstack/react-query'
 import { getPosts } from '@/services/posts'
-import { GetStaticProps, GetStaticPaths, InferGetStaticPropsType } from 'next'
+import {
+    GetStaticProps,
+    GetStaticPaths,
+    InferGetStaticPropsType,
+    GetStaticPathsResult,
+} from 'next'
 import { queries } from '@/queries'
 import { ColorRing } from 'react-loader-spinner'
 import PostSkeleton from '@/components/postSkeleton'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import { ParsedUrlQuery } from 'querystring'
 
 const revalidate = 60
 
@@ -20,14 +26,14 @@ const PostDetail = ({
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
     const theme = useTheme()
     const { asPath } = useRouter()
-    const { data, isError, isLoading } = useQuery<PostResponse[], Error>(
+    const { data, isError, isLoading } = useQuery<APIResponse, Error>(
         queries.posts.detail(asPath?.replace('/posts/', '') || '')
     )
     let arr = [0, 1, 2, 3, 4]
     useEffect(() => console.log(data), [])
 
-    if (data && !isLoading && !isError) {
-        const attributes = data[0]?.attributes as Post
+    if (data?.data && !isLoading && !isError) {
+        const attributes = data.data[0]?.attributes as Post
         return (
             <>
                 {isLoading ? (
@@ -99,20 +105,23 @@ const PostDetail = ({
     return arr.map((item, index) => <PostSkeleton key={index} />)
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-    const data = await getPosts('')
+export const getStaticPaths = async () => {
+    const data = (await getPosts('')) as APIResponse
     const queryClient = new QueryClient()
 
     // await queryClient.prefetchQuery(queries.posts.all(''))
     // const data = await queryClient.getQueryData(['posts'])
-    const pathsWithParams = data?.map((item: PostResponse) => ({
-        params: { slug: item.attributes.slug },
-    }))
+    const pathsWithParams =
+        data?.data &&
+        data?.data.map((item: PostResponse) => ({
+            params: { slug: item.attributes.slug },
+        }))
+    console.log('pathsWithParams', pathsWithParams)
 
     return {
         paths: pathsWithParams,
         fallback: 'blocking',
-    }
+    } as GetStaticPathsResult
 }
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
